@@ -9,6 +9,8 @@
   python3 omni.py run NAME --model omni-extend-20s --prompt-file p.txt --video clip.mp4 [--image face.jpg]
   python3 omni.py run NAME --model omni-fast-v2v   --prompt-file p.txt --video clip.mp4 [--image ref.jpg]
   python3 omni.py run NAME --model omni-fast-no-water --prompt-file p.txt [--image face.jpg]
+  python3 omni.py run NAME --model omni-fast-no-water --prompt-file p.txt --image first.jpg --last-image last.jpg
+                                                          клип начнётся с первого кадра и закончится на втором
   python3 omni.py newpart out/ext1.mp4 clip.mp4 ext1_new.mp4   вырезать из продления только новую часть
   python3 omni.py join a.mp4 b.mp4 c.mp4 -o final.mp4 [--delogo]   склеить куски без рассинхрона
   добавьте --dry-run, чтобы увидеть запрос и цену без отправки.
@@ -189,7 +191,9 @@ def cmd_join(a):
 def cmd_run(a):
     if a.model in NEEDS_VIDEO and not a.video:
         sys.exit(f"модели {a.model} нужен --video")
-    for p in (a.image, a.video):
+    if a.last_image and (not a.image or a.model not in BASE_MODELS):
+        sys.exit("--last-image работает только вместе с --image и моделями " + ", ".join(BASE_MODELS))
+    for p in (a.image, a.last_image, a.video):
         if p and not p.startswith("http") and not os.path.exists(p):
             sys.exit(f"нет файла {p}")
     prompt = open(a.prompt_file, encoding="utf-8").read().strip()
@@ -201,7 +205,7 @@ def cmd_run(a):
 
     if a.dry_run:
         print(json.dumps({"model": a.model, "prompt": prompt[:120] + ("…" if len(prompt) > 120 else ""),
-                          "video": a.video, "image": a.image, "price_cny": price}, ensure_ascii=False, indent=1))
+                          "video": a.video, "image": a.image, "last_image": a.last_image, "price_cny": price}, ensure_ascii=False, indent=1))
         return
     key = load_key()
     task = ledger.get("task")
@@ -218,6 +222,10 @@ def cmd_run(a):
             img = publish(a.image, a.host)
             check_url(img)
             body["images"] = [img]
+            if a.last_image:  # два кадра: первый и последний
+                last = publish(a.last_image, a.host)
+                check_url(last)
+                body["images"].append(last)
             if a.video:
                 body["image_url"] = img
         json.dump({"state": "SUBMITTING", "body": body, "at": time.time()}, open(ledger_path, "w"), ensure_ascii=False, indent=1)
@@ -277,6 +285,7 @@ def main():
     r.add_argument("name"); r.add_argument("--model", required=True, choices=list(PRICES))
     r.add_argument("--prompt-file", required=True)
     r.add_argument("--video"); r.add_argument("--image")
+    r.add_argument("--last-image", help="второй кадр: клип закончится на нём (только с --image, модели omni-fast*)")
     r.add_argument("--duration", type=int, default=10); r.add_argument("--size", default="1280x720")
     r.add_argument("--host", default="uguu", choices=["uguu", "litterbox"])
     r.add_argument("--out-dir", default="out"); r.add_argument("--limit", type=int, default=1500)
