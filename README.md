@@ -21,7 +21,7 @@
 Минута непрерывного видео цепочкой продлений ≈ ¥3,75 (≈ 45 ₽).
 
 ## Что понадобится
-- Аккаунт и ключ на https://newapi.yiciyuang.com — по шагам в `guides/registration.md`, баланс ¥10–20 на пробы.
+- Аккаунт и ключ на https://newapi.yiciyuang.com/register?aff=W3q1 — по шагам в `guides/registration.md`, баланс ¥10–20 на пробы.
 - Python 3.9+ и ffmpeg (агент поставит сам).
 
 ## Структура

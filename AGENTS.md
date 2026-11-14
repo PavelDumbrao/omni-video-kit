@@ -14,7 +14,7 @@
 - `python3 --version` (нужен 3.9+), `ffmpeg -version`. Нет ffmpeg — поставь (macOS `brew install ffmpeg`, Windows `winget install Gyan.FFmpeg`, Linux `sudo apt install ffmpeg`).
 
 ## Шаг 2. Ключ
-- Спроси, есть ли аккаунт на https://newapi.yiciyuang.com. Нет — проведи по `guides/registration.md`.
+- Спроси, есть ли аккаунт на newapi.yiciyuang.com. Нет — дай ссылку для регистрации https://newapi.yiciyuang.com/register?aff=W3q1 и проведи по `guides/registration.md`.
 - Попроси создать файл `.env` в папке набора со строкой `YICIYUANG_API_KEY=sk-...` (по образцу `.env.example`). Лучше, чтобы человек вставил ключ в файл сам. Если он прислал ключ в чат — запиши его в `.env` и больше нигде не повторяй.
 - `python3 scripts/omni.py check` → «Ключ работает». Если на балансе 0 — подскажи пополнить (`guides/registration.md`).
 
