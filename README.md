@@ -32,6 +32,7 @@ skills/omni-video-edit/SKILL.md  сам скилл: модели, рецепты
 scripts/omni.py                скрипт: check, prep, run, newpart, join (только стандартный Python)
 examples/                      проверенные промпты: продление, переодевание, стиль, сцена из фото, сцена между двумя кадрами
 guides/registration.md         регистрация, ключ, пополнение
+guides/my-voice.md             свой голос в ролике: ElevenLabs speech-to-speech
 ```
 
 ## Важно
